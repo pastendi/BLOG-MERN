@@ -1,13 +1,16 @@
 const User = require('../models/User')
 const { StatusCodes } = require('http-status-codes')
+const { createJWT, verifyToken } = require('../token')
 
 const register = async (req, res) => {
   const { email } = req?.body
   const userExist = await User.findOne({ email })
   if (userExist) throw new Error('User already exist')
   const user = await User.create(req.body)
+  const token = createJWT(user._id)
   res.status(StatusCodes.CREATED).json({
     user,
+    token,
     msg: 'User registered successfully',
   })
 }
@@ -21,6 +24,11 @@ const login = async (req, res) => {
   if (!isPasswordCorrect) {
     throw new Error('Invalid credentials')
   }
-  res.status(StatusCodes.OK).json({ user, msg: 'Login successful' })
+  const token = createJWT(user._id)
+  res.status(StatusCodes.OK).json({ user, token, msg: 'Login successful' })
 }
-module.exports = { register, login }
+const getUsers = async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
+}
+module.exports = { register, login, getUsers }
