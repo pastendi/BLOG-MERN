@@ -1,8 +1,8 @@
 const { StatusCodes } = require('http-status-codes')
 const errorHandler = (err, req, res, next) => {
   const error = {
-    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    msg: 'Something went wrong, try again later',
+    statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+    msg: err.message || 'Something went wrong, try again later',
   }
   if (err.name === 'ValidationError') {
     error.statusCode = StatusCodes.BAD_REQUEST
