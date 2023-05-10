@@ -1,11 +1,13 @@
 const User = require('../models/User')
 const { createJWT } = require('../token')
+const fs = require('fs')
 const {
   UnauthenticatedError,
   UnauthorizedError,
   BadRequestError,
 } = require('../errors')
 const { StatusCodes } = require('http-status-codes')
+const cloudinaryUpload = require('../utils/cloudinary')
 
 const register = async (req, res) => {
   const { email } = req?.body
@@ -91,6 +93,13 @@ const blockUnblock = async (req, res) => {
     res.json('The user is blocked')
   }
 }
+const profile = async (req, res) => {
+  const storagePath = `public/temp/${req.file.fileName}`
+  const upload = await cloudinaryUpload(storagePath)
+  fs.unlinkSync(storagePath)
+  console.log(upload.url)
+  res.status(StatusCodes.OK).json({ msg: 'profile' })
+}
 module.exports = {
   register,
   login,
@@ -98,4 +107,5 @@ module.exports = {
   changePassword,
   followUnfollow,
   blockUnblock,
+  profile,
 }
