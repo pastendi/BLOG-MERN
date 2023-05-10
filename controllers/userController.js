@@ -1,12 +1,13 @@
 const User = require('../models/User')
 const { createJWT } = require('../token')
-const { UnauthenticatedError } = require('../errors')
+const { UnauthenticatedError, BadRequestError } = require('../errors')
 const { StatusCodes } = require('http-status-codes')
 
 const register = async (req, res) => {
   const { email } = req?.body
   const userExist = await User.findOne({ email })
-  if (userExist) throw new BadRequestError('User already exist')
+  if (userExist)
+    throw new BadRequestError('Account with this email already exist')
   const user = await User.create(req.body)
   const token = createJWT(user._id)
   res.status(StatusCodes.CREATED).json({
@@ -44,4 +45,26 @@ const changePassword = async (req, res) => {
     .status(StatusCodes.OK)
     .json({ updateUser, msg: 'Password changed successfully' })
 }
-module.exports = { register, login, getUsers, changePassword }
+const followUnfollow = async (req, res) => {
+  const { userId } = req.body
+  const currentUserId = req.user.id
+  const currentUser = await User.findById(currentUserId)
+  if (currentUser.following.includes(userId)) {
+    await User.findByIdAndUpdate(userId, {
+      $pull: { followers: currentUserId },
+    })
+    await User.findByIdAndUpdate(currentUserId, {
+      $pull: { following: userId },
+    })
+    res.json('You have successfully unfollowed this user')
+  } else {
+    await User.findByIdAndUpdate(userId, {
+      $push: { followers: currentUserId },
+    })
+    await User.findByIdAndUpdate(currentUserId, {
+      $push: { following: userId },
+    })
+    res.json('You have successfully followed this user')
+  }
+}
+module.exports = { register, login, getUsers, changePassword, followUnfollow }
