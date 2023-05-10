@@ -1,6 +1,10 @@
 const User = require('../models/User')
 const { createJWT } = require('../token')
-const { UnauthenticatedError, BadRequestError } = require('../errors')
+const {
+  UnauthenticatedError,
+  UnauthorizedError,
+  BadRequestError,
+} = require('../errors')
 const { StatusCodes } = require('http-status-codes')
 
 const register = async (req, res) => {
@@ -67,4 +71,31 @@ const followUnfollow = async (req, res) => {
     res.json('You have successfully followed this user')
   }
 }
-module.exports = { register, login, getUsers, changePassword, followUnfollow }
+const blockUnblock = async (req, res) => {
+  const { userId } = req.body
+  const currentUser = await User.findById(req.user.id)
+  if (!currentUser.isAdmin)
+    throw new UnauthorizedError(
+      'Sorry but you are not authorized for this action'
+    )
+  const user = await User.findById(userId)
+  if (user.isBlocked) {
+    await User.findByIdAndUpdate(userId, {
+      $set: { isBlocked: false },
+    })
+    res.json('The user is unblocked')
+  } else {
+    await User.findByIdAndUpdate(userId, {
+      $set: { isBlocked: true },
+    })
+    res.json('The user is blocked')
+  }
+}
+module.exports = {
+  register,
+  login,
+  getUsers,
+  changePassword,
+  followUnfollow,
+  blockUnblock,
+}
