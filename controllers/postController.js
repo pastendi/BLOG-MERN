@@ -3,7 +3,9 @@ const { BadRequestError, UnauthorizedError } = require('../errors')
 const Filter = require('bad-words')
 const Post = require('../models/Post')
 const User = require('../models/User')
+const cloudinaryUpload = require('../utils/cloudinary')
 const filter = new Filter()
+
 const createPost = async (req, res) => {
   const userId = req.user.id
   const user = await User.findById(userId)
@@ -18,7 +20,12 @@ const createPost = async (req, res) => {
       'Post failed because it contains bad words and you have been blocked'
     )
   }
-  const post = await Post.create({ ...req.body, userId })
+  //upload to cloudinary
+  const storagePath = `public/temp/${req.file.fileName}`
+  const upload = await cloudinaryUpload(storagePath)
+  fs.unlinkSync(storagePath) //remove temp file
+
+  const post = await Post.create({ ...req.body, image: upload?.url, userId })
   res.status(StatusCodes.CREATED).json({ post })
 }
 module.exports = { createPost }

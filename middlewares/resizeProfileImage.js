@@ -1,6 +1,6 @@
 const sharp = require('sharp')
 const path = require('path')
-const resizeImage = async (req, res, next) => {
+const resizeProfileImage = async (req, res, next) => {
   if (!req.file) return next()
   req.file.fileName = `user-${Date.now()}-${req.file.originalname}`
   await sharp(req.file.buffer)
@@ -16,4 +16,4 @@ const resizeImage = async (req, res, next) => {
   next()
 }
 
-module.exports = resizeImage
+module.exports = resizeProfileImage

@@ -11,10 +11,10 @@ const multerFilter = (req, file, cb) => {
   }
 }
 
-const uploadProfile = multer({
+const uploadImage = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
   limits: { fileSize: 1000000 },
 })
 
-module.exports = uploadProfile
+module.exports = uploadImage

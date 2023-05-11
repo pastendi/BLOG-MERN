@@ -97,11 +97,12 @@ const blockUnblock = async (req, res) => {
   }
 }
 const profile = async (req, res) => {
+  const userId = req.user.id
   const storagePath = `public/temp/${req.file.fileName}`
   const upload = await cloudinaryUpload(storagePath)
   fs.unlinkSync(storagePath)
-  console.log(upload.url)
-  res.status(StatusCodes.OK).json({ msg: 'profile' })
+  const user = await User.findByIdAndUpdate(userId, { profile: upload?.url })
+  res.status(StatusCodes.OK).json({ user })
 }
 module.exports = {
   register,
