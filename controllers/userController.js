@@ -28,6 +28,9 @@ const login = async (req, res) => {
     throw new UnauthenticatedError('Please provide email and password')
   }
   const user = await User.findOne({ email })
+  if (user.isBlocked) {
+    throw new UnauthorizedError('Currently you are blocked')
+  }
   const isPasswordCorrect = await user?.comparePassword(password)
   if (!isPasswordCorrect) {
     throw new UnauthenticatedError('Invalid Credentials')
