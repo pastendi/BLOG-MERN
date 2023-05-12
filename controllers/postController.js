@@ -33,7 +33,12 @@ const createPost = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ post })
 }
 const getAllPosts = async (req, res) => {
-  // const posts = await Post.find({})
-  res.json('Fetch all post')
+  const posts = await Post.find({})
+    .populate({
+      path: 'user',
+      select: ['firstName', 'email'],
+    })
+    .sort({ createdAt: -1 })
+  res.json({ posts })
 }
 module.exports = { createPost, getAllPosts }
