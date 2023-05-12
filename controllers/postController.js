@@ -25,8 +25,15 @@ const createPost = async (req, res) => {
   const storagePath = `public/temp/${req.file.fileName}`
   const upload = await cloudinaryUpload(storagePath)
   removeFile(storagePath) //remove temp file
-
-  const post = await Post.create({ ...req.body, image: upload?.url, userId })
+  const post = await Post.create({
+    ...req.body,
+    image: upload?.url,
+    user: userId,
+  })
   res.status(StatusCodes.CREATED).json({ post })
 }
-module.exports = { createPost }
+const getAllPosts = async (req, res) => {
+  // const posts = await Post.find({})
+  res.json('Fetch all post')
+}
+module.exports = { createPost, getAllPosts }
