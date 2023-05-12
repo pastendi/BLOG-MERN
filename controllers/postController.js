@@ -4,6 +4,7 @@ const Filter = require('bad-words')
 const Post = require('../models/Post')
 const User = require('../models/User')
 const cloudinaryUpload = require('../utils/cloudinary')
+const removeFile = require('../utils/removeFile')
 const filter = new Filter()
 
 const createPost = async (req, res) => {
@@ -23,7 +24,7 @@ const createPost = async (req, res) => {
   //upload to cloudinary
   const storagePath = `public/temp/${req.file.fileName}`
   const upload = await cloudinaryUpload(storagePath)
-  fs.unlinkSync(storagePath) //remove temp file
+  removeFile(storagePath) //remove temp file
 
   const post = await Post.create({ ...req.body, image: upload?.url, userId })
   res.status(StatusCodes.CREATED).json({ post })

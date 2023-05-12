@@ -1,6 +1,5 @@
 const User = require('../models/User')
 const { createJWT } = require('../token')
-const fs = require('fs')
 const {
   UnauthenticatedError,
   UnauthorizedError,
@@ -8,6 +7,7 @@ const {
 } = require('../errors')
 const { StatusCodes } = require('http-status-codes')
 const cloudinaryUpload = require('../utils/cloudinary')
+const removeFile = require('../utils/removeFile')
 
 const register = async (req, res) => {
   const { email } = req?.body
@@ -100,7 +100,7 @@ const profile = async (req, res) => {
   const userId = req.user.id
   const storagePath = `public/temp/${req.file.fileName}`
   const upload = await cloudinaryUpload(storagePath)
-  fs.unlinkSync(storagePath)
+  removeFile(storagePath)
   const user = await User.findByIdAndUpdate(userId, { profile: upload?.url })
   res.status(StatusCodes.OK).json({ user })
 }

@@ -19,7 +19,7 @@ router.route('/login').post(login)
 router.route('/').get(auth, getUsers)
 router
   .route('/profile')
-  .patch(uploadImage.single('image'), resizeProfileImage, profile)
+  .patch(auth, uploadImage.single('image'), resizeProfileImage, profile)
 router.route('/follow-unfollow').patch(auth, followUnfollow)
 router.route('/block-unblock').patch(auth, blockUnblock)
 router.route('/change-password').patch(auth, changePassword)
