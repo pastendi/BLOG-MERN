@@ -41,4 +41,11 @@ const getAllPosts = async (req, res) => {
     .sort({ createdAt: -1 })
   res.json({ posts })
 }
-module.exports = { createPost, getAllPosts }
+const getPost = async (req, res) => {
+  const post = await Post.findById(req.params.id).populate({
+    path: 'user',
+    select: ['firstName', 'email'],
+  })
+  res.json({ post })
+}
+module.exports = { createPost, getAllPosts, getPost }
