@@ -8,12 +8,14 @@ const removeFile = require('../utils/removeFile')
 const filter = new Filter()
 
 const createPost = async (req, res) => {
-  const userId = req.user.id
+  const userId = req.user?.id
+  const { title, description } = req.body
+
   const user = await User.findById(userId)
   if (user.isBlocked) {
     throw new UnauthorizedError('Currently you are blocked')
   }
-  const containsBadWord = filter.isProfane(req.body.title, req.body.description)
+  const containsBadWord = filter.isProfane(title, description)
   // block user who uses bad word in post
   if (containsBadWord) {
     await User.findByIdAndUpdate(userId, { isBlocked: true })
@@ -54,4 +56,35 @@ const getPost = async (req, res) => {
   })
   res.json({ post })
 }
-module.exports = { createPost, getAllPosts, getPost }
+const updatePost = async (req, res) => {
+  const userId = req.user?.id
+  const { title, description } = req.body
+  const containsBadWord = filter.isProfane(title, description)
+  // block user who uses bad word in post
+  if (containsBadWord) {
+    await User.findByIdAndUpdate(userId, { isBlocked: true })
+    throw new BadRequestError(
+      'Post failed because it contains bad words and you have been blocked'
+    )
+  }
+  let post = {}
+  if (req.file) {
+    //upload to cloudinary
+    const storagePath = `public/temp/${req.file.fileName}`
+    const upload = await cloudinaryUpload(storagePath)
+    removeFile(storagePath) //remove temp file
+    post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, image: upload?.url },
+      { new: true }
+    )
+  } else {
+    post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body },
+      { new: true }
+    )
+  }
+  res.status(StatusCodes.OK).json(post)
+}
+module.exports = { createPost, getAllPosts, getPost, updatePost }
