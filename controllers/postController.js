@@ -42,7 +42,13 @@ const getAllPosts = async (req, res) => {
   res.json({ posts })
 }
 const getPost = async (req, res) => {
-  const post = await Post.findById(req.params.id).populate({
+  const post = await Post.findByIdAndUpdate(
+    req.params.id,
+    {
+      $inc: { views: 1 },
+    },
+    { new: true }
+  ).populate({
     path: 'user',
     select: ['firstName', 'email'],
   })
