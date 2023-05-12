@@ -10,10 +10,17 @@ const cloudinaryUpload = async (file) => {
     const data = await cloudinary.uploader.upload(file, {
       resource_type: 'auto',
     })
-    return { url: data?.secure_url }
+    return { url: data?.secure_url, cloudinaryName: data?.public_id }
   } catch (error) {
-    console.log(error0)
+    console.log(error)
+  }
+}
+const cloudinaryDelete = async (assetName) => {
+  try {
+    await cloudinary.uploader.destroy(assetName)
+  } catch (error) {
+    console.log(error)
   }
 }
 
-module.exports = cloudinaryUpload
+module.exports = { cloudinaryUpload, cloudinaryDelete }

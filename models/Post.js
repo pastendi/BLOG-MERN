@@ -17,7 +17,10 @@ const PostSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      // required: [true, 'Image required'],
+      required: [true, 'Image required'],
+    },
+    cloudinaryImage: {
+      type: String,
     },
     views: {
       type: Number,

@@ -3,7 +3,7 @@ const { BadRequestError, UnauthorizedError } = require('../errors')
 const Filter = require('bad-words')
 const Post = require('../models/Post')
 const User = require('../models/User')
-const cloudinaryUpload = require('../utils/cloudinary')
+const { cloudinaryUpload, cloudinaryDelete } = require('../utils/cloudinary')
 const removeFile = require('../utils/removeFile')
 const filter = new Filter()
 
@@ -30,6 +30,7 @@ const createPost = async (req, res) => {
   const post = await Post.create({
     ...req.body,
     image: upload?.url,
+    cloudinaryImage: upload?.cloudinaryName,
     user: userId,
   })
   res.status(StatusCodes.CREATED).json({ post })
@@ -73,18 +74,20 @@ const updatePost = async (req, res) => {
     const storagePath = `public/temp/${req.file.fileName}`
     const upload = await cloudinaryUpload(storagePath)
     removeFile(storagePath) //remove temp file
-    post = await Post.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body, image: upload?.url },
-      { new: true }
-    )
+    post = await Post.findByIdAndUpdate(req.params.id, {
+      ...req.body,
+      image: upload?.url,
+      cloudinaryImage: upload?.cloudinaryName,
+    })
+    cloudinaryDelete(post.cloudinaryImage)
   } else {
-    post = await Post.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body },
-      { new: true }
-    )
+    post = await Post.findByIdAndUpdate(req.params.id, { ...req.body })
   }
   res.status(StatusCodes.OK).json(post)
 }
-module.exports = { createPost, getAllPosts, getPost, updatePost }
+const deletePost = async (req, res) => {
+  const post = await Post.findByIdAndDelete(req.params.id)
+  cloudinaryDelete(post.cloudinaryImage)
+  res.status(StatusCodes.OK).json({ msg: 'Post deleted successfully' })
+}
+module.exports = { createPost, getAllPosts, getPost, updatePost, deletePost }

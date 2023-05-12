@@ -8,6 +8,7 @@ const {
   getAllPosts,
   getPost,
   updatePost,
+  deletePost,
 } = require('../controllers/postController')
 
 router
@@ -18,5 +19,6 @@ router.route('/:id').get(getPost)
 router
   .route('/:id')
   .patch(auth, uploadImage.single('image'), resizePostImage, updatePost)
+router.route('/:id').delete(auth, deletePost)
 
 module.exports = router

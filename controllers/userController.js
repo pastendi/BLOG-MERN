@@ -6,9 +6,10 @@ const {
   BadRequestError,
 } = require('../errors')
 const { StatusCodes } = require('http-status-codes')
-const cloudinaryUpload = require('../utils/cloudinary')
+const { cloudinaryUpload, cloudinaryDelete } = require('../utils/cloudinary')
 const removeFile = require('../utils/removeFile')
 
+// register
 const register = async (req, res) => {
   const { email } = req?.body
   const userExist = await User.findOne({ email })
@@ -101,7 +102,13 @@ const profile = async (req, res) => {
   const storagePath = `public/temp/${req.file.fileName}`
   const upload = await cloudinaryUpload(storagePath)
   removeFile(storagePath)
-  const user = await User.findByIdAndUpdate(userId, { profile: upload?.url })
+  const user = await User.findByIdAndUpdate(userId, {
+    profile: upload?.url,
+    cloudinaryImage: upload?.cloudinaryName,
+  })
+  if (user.cloudinaryImage) {
+    cloudinaryDelete(user.cloudinaryImage)
+  }
   res.status(StatusCodes.OK).json({ user })
 }
 module.exports = {
