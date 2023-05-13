@@ -90,4 +90,75 @@ const deletePost = async (req, res) => {
   cloudinaryDelete(post.cloudinaryImage)
   res.status(StatusCodes.OK).json({ msg: 'Post deleted successfully' })
 }
-module.exports = { createPost, getAllPosts, getPost, updatePost, deletePost }
+const toggleLike = async (req, res) => {
+  const userId = req.user.id
+  const postId = req.params.id
+  let post = await Post.findById(postId)
+  if (post.likes.includes(userId)) {
+    post = await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { likes: userId } },
+      { new: true }
+    )
+  } else {
+    if (post.disLikes.includes(userId)) {
+      console.log('includes in dislikes')
+      post = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $pull: { disLikes: userId },
+          $push: { likes: userId },
+        },
+        { new: true }
+      )
+    } else {
+      post = await Post.findByIdAndUpdate(
+        postId,
+        { $push: { likes: userId } },
+        { new: true }
+      )
+    }
+  }
+  res.status(StatusCodes.OK).json({ post })
+}
+const toggleDislike = async (req, res) => {
+  const userId = req.user.id
+  const postId = req.params.id
+  let post = await Post.findById(postId)
+  if (post.disLikes.includes(userId)) {
+    post = await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { disLikes: userId } },
+      { new: true }
+    )
+  } else {
+    if (post.likes.includes(userId)) {
+      post = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $pull: { likes: userId },
+          $push: { disLikes: userId },
+        },
+        { new: true }
+      )
+    } else {
+      post = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $push: { disLikes: userId },
+        },
+        { new: true }
+      )
+    }
+  }
+  res.status(StatusCodes.OK).json({ post })
+}
+module.exports = {
+  createPost,
+  getAllPosts,
+  getPost,
+  updatePost,
+  deletePost,
+  toggleLike,
+  toggleDislike,
+}

@@ -9,6 +9,8 @@ const {
   getPost,
   updatePost,
   deletePost,
+  toggleLike,
+  toggleDislike,
 } = require('../controllers/postController')
 
 router
@@ -20,5 +22,8 @@ router
   .route('/:id')
   .patch(auth, uploadImage.single('image'), resizePostImage, updatePost)
 router.route('/:id').delete(auth, deletePost)
+// like and dislike
+router.route('/like/:id').patch(auth, toggleLike)
+router.route('/dislike/:id').patch(auth, toggleDislike)
 
 module.exports = router
