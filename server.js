@@ -10,11 +10,13 @@ app.use(express.json())
 // routes
 const userRouter = require('./routes/userRoutes')
 const postRouter = require('./routes/postRoutes')
+const commentRouter = require('./routes/commentRoutes')
 
 // pipelines
 
 app.use('/api/user', userRouter)
 app.use('/api/post', postRouter)
+app.use('/api/comment', commentRouter)
 
 // middleware
 app.use(notFound)

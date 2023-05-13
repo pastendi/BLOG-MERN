@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 
 const CommentSchema = new mongoose.Schema(
   {
-    comment: {
+    message: {
       type: String,
-      required: [true, 'Comment is required'],
+      required: [true, 'Message is required'],
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
