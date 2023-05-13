@@ -16,12 +16,12 @@ const {
 router
   .route('/')
   .post(auth, uploadImage.single('image'), resizePostImage, createPost)
-router.route('/').get(getAllPosts)
-router.route('/:id').get(getPost)
+  .get(getAllPosts)
 router
   .route('/:id')
+  .get(getPost)
   .patch(auth, uploadImage.single('image'), resizePostImage, updatePost)
-router.route('/:id').delete(auth, deletePost)
+  .delete(auth, deletePost)
 // like and dislike
 router.route('/like/:id').patch(auth, toggleLike)
 router.route('/dislike/:id').patch(auth, toggleDislike)

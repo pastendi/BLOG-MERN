@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const auth = require('../middlewares/authHandler')
 const uploadImage = require('../middlewares/uploadImage')
+const resizeProfileImage = require('../middlewares/resizeProfileImage')
 
 const {
   register,
@@ -12,7 +13,6 @@ const {
   blockUnblock,
   profile,
 } = require('../controllers/userController')
-const resizeProfileImage = require('../middlewares/resizeProfileImage')
 
 router.route('/register').post(register)
 router.route('/login').post(login)
