@@ -97,6 +97,10 @@ const blockUnblock = async (req, res) => {
     res.json('The user is blocked')
   }
 }
+const getUser = async (req, res) => {
+  const user = await User.findById(req.params.id).populate('posts')
+  res.json({ user })
+}
 const profile = async (req, res) => {
   const userId = req.user.id
   const storagePath = `public/temp/${req.file.fileName}`
@@ -118,5 +122,6 @@ module.exports = {
   changePassword,
   followUnfollow,
   blockUnblock,
+  getUser,
   profile,
 }

@@ -107,6 +107,11 @@ const UserSchema = new mongoose.Schema(
     timestamps: true,
   }
 )
+UserSchema.virtual('posts', {
+  ref: 'Post',
+  foreignField: 'user',
+  localField: '_id',
+})
 UserSchema.pre('save', async function () {
   const salt = await bcrypt.genSalt(10)
   this.password = await bcrypt.hash(this.password, salt)

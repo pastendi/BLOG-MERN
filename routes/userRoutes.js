@@ -11,12 +11,14 @@ const {
   changePassword,
   followUnfollow,
   blockUnblock,
+  getUser,
   profile,
 } = require('../controllers/userController')
 
 router.route('/register').post(register)
 router.route('/login').post(login)
 router.route('/').get(auth, getUsers)
+router.route('/:id').get(getUser)
 router
   .route('/profile')
   .patch(auth, uploadImage.single('image'), resizeProfileImage, profile)
