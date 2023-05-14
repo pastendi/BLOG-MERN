@@ -51,10 +51,15 @@ const getPost = async (req, res) => {
       $inc: { views: 1 },
     },
     { new: true }
-  ).populate({
-    path: 'user',
-    select: ['firstName', 'email'],
-  })
+  )
+    .populate({
+      path: 'user',
+      select: ['firstName', 'email'],
+    })
+    .populate({
+      path: 'comments',
+      populate: { path: 'user', select: ['firstName', 'email'] },
+    })
   res.json({ post })
 }
 const updatePost = async (req, res) => {
