@@ -1,5 +1,6 @@
 const slugify = require('slugify')
 const Category = require('../models/Category')
+const User = require('../models/User')
 const { StatusCodes } = require('http-status-codes')
 const { UnauthorizedError } = require('../errors')
 const createCategory = async (req, res) => {
