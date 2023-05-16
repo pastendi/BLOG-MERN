@@ -1,8 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        darkBlue: 'rgb(10,31,54)',
+      },
+      fontFamily: {
+        sans: ['Raleway', 'sans-serif'],
+        opensans: ['Open Sans', 'sans-serif'],
+      },
+    },
   },
   screens: {
     sm: '480px',
