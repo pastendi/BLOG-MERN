@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer components {
+  .nav-link {
+    @apply px-0 h-10 uppercase flex justify-center items-center border-white hover:border-b-2 cursor-pointer;
+  }
+}
