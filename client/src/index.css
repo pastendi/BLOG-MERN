@@ -13,6 +13,6 @@
     backdrop-filter: blur(5px);
   }
   .btn {
-    @apply rounded-md border-none outline-none px-5 py-2;
+    @apply rounded-md border-none font-semibold text-lg outline-none px-5 py-2;
   }
 }
