@@ -6,11 +6,11 @@
     @apply px-0 h-10 capitalize font-semibold flex justify-center items-center border-sky-400 dark:border-white hover:border-b-2 cursor-pointer;
   }
   .page {
-    @apply pt-20 container max-w-6xl mx-auto px-2 sm:px-6;
+    @apply mt-20 container sm:max-w-3xl md:max-w-6xl mx-auto p-2 md:p-6;
   }
-  .blur-background {
+  nav {
     background-color: rgba(128, 109, 109, 0.2);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
   }
   .btn {
     @apply rounded-md border-none font-semibold text-lg outline-none px-5 py-2;
