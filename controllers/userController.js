@@ -11,6 +11,7 @@ const removeFile = require('../utils/removeFile')
 
 // register
 const register = async (req, res) => {
+  console.log(req.body)
   const { email } = req?.body
   const userExist = await User.findOne({ email })
   if (userExist)
