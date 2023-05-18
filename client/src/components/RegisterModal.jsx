@@ -2,18 +2,21 @@ import { useState } from 'react'
 import Input from './Form/Input'
 import Button from './Form/Button'
 import ModalLayout from './ModalLayout'
+import { useDispatch, useSelector } from 'react-redux'
+import { registerUser } from '../redux/slices/userSlice'
 const data = {
+  firstName: '',
+  lastName: '',
   email: '',
   password: '',
   cPassword: '',
-  name: '',
-  username: '',
 }
 const RegisterModal = () => {
+  const dispatch = useDispatch()
   const [values, setValues] = useState(data)
   const [isLoading, setIsLoading] = useState(false)
   const register = () => {
-    console.log('register')
+    dispatch(registerUser(values))
   }
   const handleChange = ({ currentTarget: input }) => {
     setValues({ ...values, [input.name]: input.value })
@@ -21,17 +24,17 @@ const RegisterModal = () => {
   const body = (
     <div className='flex flex-col gap-4'>
       <Input
-        placeholder='Name'
-        name='name'
+        placeholder='First name'
+        name='firstName'
         onChange={handleChange}
-        value={values.name}
+        value={values.firstName}
         disabled={isLoading}
       />
       <Input
-        placeholder='Username'
-        name='username'
+        placeholder='Last name'
+        name='lastName'
         onChange={handleChange}
-        value={values.username}
+        value={values.lastName}
         disabled={isLoading}
       />
       <Input
