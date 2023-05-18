@@ -14,7 +14,9 @@ const data = {
 const RegisterModal = () => {
   const dispatch = useDispatch()
   const [values, setValues] = useState(data)
-  const [isLoading, setIsLoading] = useState(false)
+
+  const storeData = useSelector((store) => store.users)
+  const { loading, appErr, serverErr } = storeData
   const register = () => {
     dispatch(registerUser(values))
   }
@@ -23,26 +25,31 @@ const RegisterModal = () => {
   }
   const body = (
     <div className='flex flex-col gap-4'>
+      {appErr || serverErr ? (
+        <h1 className='text-red-800'>
+          {appErr} {serverErr}
+        </h1>
+      ) : null}
       <Input
         placeholder='First name'
         name='firstName'
         onChange={handleChange}
         value={values.firstName}
-        disabled={isLoading}
+        disabled={loading}
       />
       <Input
         placeholder='Last name'
         name='lastName'
         onChange={handleChange}
         value={values.lastName}
-        disabled={isLoading}
+        disabled={loading}
       />
       <Input
         placeholder='Email'
         name='email'
         onChange={handleChange}
         value={values.email}
-        disabled={isLoading}
+        disabled={loading}
       />
       <Input
         placeholder='Password'
@@ -50,7 +57,7 @@ const RegisterModal = () => {
         name='password'
         onChange={handleChange}
         value={values.password}
-        disabled={isLoading}
+        disabled={loading}
       />
       <Input
         placeholder='Confirm Password'
@@ -58,9 +65,15 @@ const RegisterModal = () => {
         name='cPassword'
         onChange={handleChange}
         value={values.cPassword}
-        disabled={isLoading}
+        disabled={loading}
       />
-      <Button label='Sign Up' fullWidth large onClick={register} />
+      <Button
+        label='Sign Up'
+        disabled={loading}
+        fullWidth
+        large
+        onClick={register}
+      />
       <div className='text-neutral-700 text-center'>
         Already have an account?{' '}
         <span className='text-emerald-500 font-semibold cursor-pointer hover:underline'>

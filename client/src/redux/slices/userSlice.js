@@ -48,7 +48,7 @@ const userSlice = createSlice({
     })
     builder.addCase(registerUser.rejected, (state, action) => {
       state.loading = false
-      state.appErr = action?.payload?.message
+      state.appErr = action?.payload?.msg
       state.serverErr = action?.error?.message
     })
   },
